@@ -1,0 +1,3 @@
+# By tutor-contrib-notifications
+NOTIFICATIONS_DEFAULT_FROM_EMAIL = "{{ NOTIFICATIONS_DEFAULT_FROM_EMAIL }}"
+# End of tutor-contrib-notifications
