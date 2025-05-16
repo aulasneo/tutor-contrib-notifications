@@ -1,0 +1,76 @@
+# By tutor-contrib-notifications
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: notifications-emails
+  labels:
+    app.kubernetes.io/name: notifications-emails
+spec:
+  schedule: {{ NOTIFICATIONS_DAILY_SCHEDULE }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: notifications-emails
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: notifications-emails
+              image: {{ DOCKER_IMAGE_OPENEDX }}
+              volumeMounts:
+                - mountPath: /openedx/edx-platform/lms/envs/tutor/
+                  name: settings-lms
+                - mountPath: /openedx/config
+                  name: config
+              command:
+                - /bin/sh
+                - -c
+                - {% if NOTIFICATIONS_SEND_COURSE_UPDATE %}./manage.py lms send_course_update {{ LMS_HOST }}; {% endif %} {% if NOTIFICATIONS_SEND_RECURRING_NUDGE %}./manage.py lms send_recurring_nudge {{ LMS_HOST }}; {% endif %}{% if NOTIFICATIONS_SEND_DAILY_DIGEST %}./manage.py lms send_email_digest Daily {{ LMS_HOST }}; {% endif %}
+          volumes:
+            - name: settings-lms
+              configMap:
+                name: openedx-settings-lms
+            - name: config
+              configMap:
+                name: openedx-config
+{% if NOTIFICATIONS_SEND_WEEKLY_DIGEST %}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: weekly-emails
+  labels:
+    app.kubernetes.io/name: weekly-emails
+spec:
+  schedule: {{ NOTIFICATIONS_WEEKLY_SCHEDULE }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: weekly-emails
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: weekly-emails
+              image: {{ DOCKER_IMAGE_OPENEDX }}
+              volumeMounts:
+                - mountPath: /openedx/edx-platform/lms/envs/tutor/
+                  name: settings-lms
+                - mountPath: /openedx/config
+                  name: config
+              command:
+                - /bin/sh
+                - -c
+                - ./manage.py lms send_email_digest Weekly
+          volumes:
+            - name: settings-lms
+              configMap:
+                name: openedx-settings-lms
+            - name: config
+              configMap:
+                name: openedx-config
+{% endif %}
+# End of tutor-contrib-notifications

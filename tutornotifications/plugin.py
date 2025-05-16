@@ -17,6 +17,14 @@ hooks.Filters.CONFIG_DEFAULTS.add_items(
         # Each new setting is a pair: (setting_name, default_value).
         # Prefix your setting names with 'NOTIFICATIONS_'.
         ("NOTIFICATIONS_VERSION", __version__),
+        ("NOTIFICATIONS_DAILY_SCHEDULE", "0 10 * * *"),
+        ("NOTIFICATIONS_WEEKLY_SCHEDULE", "0 10 * * 0"),
+        ("NOTIFICATIONS_SEND_COURSE_UPDATE", True),
+        ("NOTIFICATIONS_SEND_RECURRING_NUDGE", True),
+        ("NOTIFICATIONS_SEND_DAILY_DIGEST", True),
+        ("NOTIFICATIONS_SEND_WEEKLY_DIGEST", True),
+        ("NOTIFICATIONS_ENABLE_GROUPING", True),
+        ("NOTIFICATIONS_DEFAULT_FROM_EMAIL", "{{ CONTACT_EMAIL }}"),
     ]
 )
 
@@ -53,7 +61,7 @@ MY_INIT_TASKS: list[tuple[str, tuple[str, ...]]] = [
     # For example, to add LMS initialization steps, you could add the script template at:
     # tutornotifications/templates/notifications/tasks/lms/init.sh
     # And then add the line:
-    ### ("lms", ("notifications", "tasks", "lms", "init.sh")),
+    ("lms", ("notifications", "tasks", "lms", "init.sh")),
 ]
 
 
@@ -164,32 +172,46 @@ for path in glob(str(importlib_resources.files("tutornotifications") / "patches"
 # CUSTOM JOBS (a.k.a. "do-commands")
 ########################################
 
-# A job is a set of tasks, each of which run inside a certain container.
-# Jobs are invoked using the `do` command, for example: `tutor local do importdemocourse`.
-# A few jobs are built in to Tutor, such as `init` and `createuser`.
-# You can also add your own custom jobs:
+@click.command()
+def send_daily_digest() -> list[tuple[str, str]]:
+    """
+    Send daily digest emails.
+    """
+    return [
+        ("lms", "./manage.py lms send_email_digest Daily"),
+    ]
 
+@click.command()
+def send_weekly_digest() -> list[tuple[str, str]]:
+    """
+    Send weekly digest emails.
+    """
+    return [
+        ("lms", "./manage.py lms send_email_digest Weekly"),
+    ]
 
-# To add a custom job, define a Click command that returns a list of tasks,
-# where each task is a pair in the form ("<service>", "<shell_command>").
-# For example:
-### @click.command()
-### @click.option("-n", "--name", default="plugin developer")
-### def say_hi(name: str) -> list[tuple[str, str]]:
-###     """
-###     An example job that just prints 'hello' from within both LMS and CMS.
-###     """
-###     return [
-###         ("lms", f"echo 'Hello from LMS, {name}!'"),
-###         ("cms", f"echo 'Hello from CMS, {name}!'"),
-###     ]
+@click.command()
+def send_course_update() -> list[tuple[str, str]]:
+    """
+    Send course update emails.
+    """
+    return [
+        ("lms", "./manage.py lms send_course_update {{ LMS_HOST }}"),
+    ]
 
+@click.command()
+def send_recurring_nudge() -> list[tuple[str, str]]:
+    """
+    Send recurring nudge emails.
+    """
+    return [
+        ("lms", "./manage.py lms send_recurring_nudge {{ LMS_HOST }}"),
+    ]
 
-# Then, add the command function to CLI_DO_COMMANDS:
-## hooks.Filters.CLI_DO_COMMANDS.add_item(say_hi)
-
-# Now, you can run your job like this:
-#   $ tutor local do say-hi --name="Andrés González"
+hooks.Filters.CLI_DO_COMMANDS.add_item(send_daily_digest)
+hooks.Filters.CLI_DO_COMMANDS.add_item(send_weekly_digest)
+hooks.Filters.CLI_DO_COMMANDS.add_item(send_course_update)
+hooks.Filters.CLI_DO_COMMANDS.add_item(send_recurring_nudge)
 
 
 #######################################
