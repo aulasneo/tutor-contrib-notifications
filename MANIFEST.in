@@ -1,0 +1,2 @@
+recursive-include tutornotifications/patches *
+recursive-include tutornotifications/templates *
