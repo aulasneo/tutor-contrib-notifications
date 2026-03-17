@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix weekly digest job
 
+## Version 20.0.0 (2026-03-17)
+
+- Add Tutor 20.x / Open edX Teak compatibility metadata
+- Fix Kubernetes notification CronJobs to use the standard LMS job environment
+- Add configuration toggles for notification waffle flags
+- Fix CI compile checks for the current project layout
+
 ## [Version 19.0.0 (2025-05-16)]
 
 ### Added

@@ -1,7 +1,7 @@
 notifications plugin for `Tutor <https://docs.tutor.edly.io>`__
 ###############################################################
 
-Tutor plugin that enables email notifications for Open edX.
+Tutor plugin that enables email notifications for Open edX on Teak / Tutor 20.x.
 Open edX offers three main types of notifications:
 
 - Course updates
@@ -52,7 +52,7 @@ To enable the plugin, run:
 .. code-block:: bash
 
     tutor plugins enable notifications
-    tutor {local|k8s} do init [--limit notifications
+    tutor {local|k8s} do init --limit notifications
     tutor {local|k8s} start
 
 The `tutor {local|k8s} do init` command will set the waffle flags for the notifications plugin.

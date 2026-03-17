@@ -29,7 +29,7 @@ jobs:
           python -m pip install build twine
 
       - name: Verify Python files compile
-        run: python -m py_compile tutornotifications/plugin.py tutornotifications/__about__.py setup.py
+        run: python -m py_compile .hatch_build.py tutornotifications/plugin.py tutornotifications/__about__.py
 
       - name: Build distributions
         run: python -m build
