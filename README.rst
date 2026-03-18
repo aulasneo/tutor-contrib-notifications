@@ -11,6 +11,16 @@ Open edX offers three main types of notifications:
 
 This plugin will enable all of them by default.
 
+Deprecation notice
+==================
+
+This repository is deprecated starting with Ulmo.
+
+For Ulmo and later releases, use the official Tutor plugin instead:
+`openedx/tutor-contrib-platform-notifications <https://github.com/openedx/tutor-contrib-platform-notifications>`__.
+
+This repository is kept for Teak / Tutor 20.x compatibility only.
+
 Course updates (aka course highlight emails)
 ============================================
 
@@ -39,6 +49,8 @@ To learn more about this feature, see `Email Notifications <https://docs.openedx
 
 Installation
 ************
+
+For Ulmo and later, install and use the official plugin instead of this repository.
 
 .. code-block:: bash
 
