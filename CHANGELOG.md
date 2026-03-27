@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+- Align local development automation with the branding plugin by adding dev/test requirements, expanding the `Makefile`, and modernizing build checks.
+- Replace the previous CI setup with branding-style GitHub Actions for test and publish workflows.
+- Restrict supported Python versions to 3.11+ in package metadata and ignore generated Tutor local test artifacts.
+
 ## Version 20.0.0 (2026-03-17)
 
 - Mark this repository as deprecated starting with Ulmo in favor of `openedx/tutor-contrib-platform-notifications`

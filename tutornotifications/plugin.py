@@ -166,7 +166,9 @@ hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
 
 # For each file in tutornotifications/patches,
 # apply a patch based on the file's name and contents.
-for path in glob(str(importlib_resources.files("tutornotifications") / "patches" / "*")):
+for path in glob(
+    str(importlib_resources.files("tutornotifications") / "patches" / "*")
+):
     with open(path, encoding="utf-8") as patch_file:
         hooks.Filters.ENV_PATCHES.add_item((os.path.basename(path), patch_file.read()))
 
@@ -174,6 +176,7 @@ for path in glob(str(importlib_resources.files("tutornotifications") / "patches"
 ########################################
 # CUSTOM JOBS (a.k.a. "do-commands")
 ########################################
+
 
 @click.command()
 def send_daily_digest() -> list[tuple[str, str]]:
@@ -184,6 +187,7 @@ def send_daily_digest() -> list[tuple[str, str]]:
         ("lms", "./manage.py lms send_email_digest Daily"),
     ]
 
+
 @click.command()
 def send_weekly_digest() -> list[tuple[str, str]]:
     """
@@ -192,6 +196,7 @@ def send_weekly_digest() -> list[tuple[str, str]]:
     return [
         ("lms", "./manage.py lms send_email_digest Weekly"),
     ]
+
 
 @click.command()
 def send_course_update() -> list[tuple[str, str]]:
@@ -202,6 +207,7 @@ def send_course_update() -> list[tuple[str, str]]:
         ("lms", "./manage.py lms send_course_update {{ LMS_HOST }}"),
     ]
 
+
 @click.command()
 def send_recurring_nudge() -> list[tuple[str, str]]:
     """
@@ -210,6 +216,7 @@ def send_recurring_nudge() -> list[tuple[str, str]]:
     return [
         ("lms", "./manage.py lms send_recurring_nudge {{ LMS_HOST }}"),
     ]
+
 
 hooks.Filters.CLI_DO_COMMANDS.add_item(send_daily_digest)
 hooks.Filters.CLI_DO_COMMANDS.add_item(send_weekly_digest)
