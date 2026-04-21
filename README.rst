@@ -1,25 +1,24 @@
 notifications plugin for `Tutor <https://docs.tutor.edly.io>`__
 ###############################################################
 
-Tutor plugin that enables email notifications for Open edX on Teak / Tutor 20.x.
-Open edX offers three main types of notifications:
+Tutor companion plugin for Open edX notification jobs on Ulmo / Tutor 21.x.
+
+This repository is meant to be installed alongside the official
+`openedx/tutor-contrib-platform-notifications <https://github.com/openedx/tutor-contrib-platform-notifications>`__
+plugin.
+
+The official plugin provides the notification tray, MFE integration and core
+notification configuration under the Tutor plugin name ``notifications``.
+This repository complements it under the Tutor plugin name ``notification-jobs``
+by keeping job automation for notification-related management commands:
 
 - Course updates
 - Recurring nudges
 - Daily digests
 - Weekly digests
 
-This plugin will enable all of them by default.
-
-Deprecation notice
-==================
-
-This repository is deprecated starting with Ulmo.
-
-For Ulmo and later releases, use the official Tutor plugin instead:
-`openedx/tutor-contrib-platform-notifications <https://github.com/openedx/tutor-contrib-platform-notifications>`__.
-
-This repository is kept for Teak / Tutor 20.x compatibility only.
+This plugin will expose manual Tutor jobs for all of them and, on Kubernetes,
+will create CronJobs for the scheduled digests.
 
 Course updates (aka course highlight emails)
 ============================================
@@ -50,26 +49,26 @@ To learn more about this feature, see `Email Notifications <https://docs.openedx
 Installation
 ************
 
-For Ulmo and later, install and use the official plugin instead of this repository.
+Install both the official notifications plugin and this companion plugin.
 
 .. code-block:: bash
 
+    pip install git+https://github.com/openedx/tutor-contrib-platform-notifications.git
     pip install git+https://github.com/aulasneo/tutor-contrib-notifications.git
 
 Usage
 *****
 
-To enable the plugin, run:
+Enable both plugins:
 
 .. code-block:: bash
 
     tutor plugins enable notifications
+    tutor plugins enable notification-jobs
     tutor {local|k8s} do init --limit notifications
     tutor {local|k8s} start
 
-The `tutor {local|k8s} do init` command will set the waffle flags for the notifications plugin.
-
-You can run the following commands to trigger the notifications manually:
+This plugin adds the following manual jobs:
 
 .. code-block:: bash
 
@@ -78,28 +77,23 @@ You can run the following commands to trigger the notifications manually:
     tutor {local|k8s} do send-course-update
     tutor {local|k8s} do send-recurring-nudge
 
-For Kubernetes users, this plugin will setup a cronjob to run the daily and weekly digests
-at the configured schedules. Users of a tutor local installation will have to set up a cronjob
-manually.
+For Kubernetes users, this plugin sets up CronJobs to run daily and weekly
+digests at the configured schedules. Users of a Tutor local installation will
+still have to configure cron outside Tutor.
 
 Configuration
 *************
 
 - NOTIFICATIONS_DAILY_SCHEDULE: Set the schedule for the daily emails. Default is "0 10 \* \* \*" (every day at 10am UTC).
 - NOTIFICATIONS_WEEKLY_SCHEDULE: Set the schedule for the weekly emails. Default is "0 10 \* \* 0" (every Sunday at 10am UTC).
+- NOTIFICATION_JOBS_SITE_DOMAIN: Optional site domain passed to `send-course-update` and `send-recurring-nudge`. Default is "{{ LMS_HOST }}". Set it to an empty value to run those jobs for all sites.
 - NOTIFICATIONS_SEND_COURSE_UPDATE: Enable course updates. Default is True.
 - NOTIFICATIONS_SEND_RECURRING_NUDGE: Enable recurring nudges. Default is True.
 - NOTIFICATIONS_SEND_DAILY_DIGEST: Enable daily digests. Default is True.
 - NOTIFICATIONS_SEND_WEEKLY_DIGEST: Enable weekly digests. Default is True.
-- NOTIFICATIONS_ENABLE_ORA_GRADE_NOTIFICATIONS: Enable ORA grade notifications. Default is True.
-- NOTIFICATIONS_ENABLE_NOTIFICATIONS: Enable notifications. Default is True.
-- NOTIFICATIONS_ENABLE_EMAIL_NOTIFICATIONS: Enable email notifications. Default is True.
-- NOTIFICATIONS_ENABLE_GROUPING: Enable grouping. Default is True.
-- NOTIFICATIONS_DEFAULT_FROM_EMAIL: Set the default from email. Default is "{{ CONTACT_EMAIL }}".
 
 Notes:
 
-- After modifying NOTIFICATIONS_ENABLE_GROUPING, you will need to run `tutor {local|k8s} do init --limit notifications` to apply the changes.
 - After changing the schedules, you will need to restart the cronjobs with `tutor k8s start`.
 
 

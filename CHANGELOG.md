@@ -6,9 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-- Align local development automation with the branding plugin by adding dev/test requirements, expanding the `Makefile`, and modernizing build checks.
-- Replace the previous CI setup with branding-style GitHub Actions for test and publish workflows.
-- Restrict supported Python versions to 3.11+ in package metadata and ignore generated Tutor local test artifacts.
+- Rename the Tutor plugin entrypoint to `notification-jobs` so it can be installed alongside the official `notifications` plugin.
+- Drop overlapping waffle-flag and MFE configuration now provided by `tutor-contrib-platform-notifications`.
+- Keep manual and Kubernetes job automation for digests, recurring nudges, and course update emails as the scope of this plugin.
+- Add an optional `NOTIFICATION_JOBS_SITE_DOMAIN` setting so schedule jobs can target one site or all sites on Ulmo.
+- Update Tutor compatibility metadata for Ulmo / Tutor 21.x.
 
 ## Version 20.0.0 (2026-03-17)
 

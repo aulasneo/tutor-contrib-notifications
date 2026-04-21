@@ -1,6 +1,6 @@
 [project]
 name = "tutor-contrib-notifications"
-description = "Tutor plugin that enables email notifications for Open edX"
+description = "Tutor companion plugin that manages Open edX notification jobs"
 authors = [
   { name = "Andres Gonzalez", email = "andres@aulasneo.com" },
 ]
@@ -18,7 +18,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-  "tutor>=20.0.0,<21.0.0",
+  "tutor>=21.0.0,<22.0.0",
 ]
 dynamic = ["version"]
 
@@ -27,7 +27,7 @@ Code = "https://github.com/aulasneo/tutor-contrib-notifications"
 Issues = "https://github.com/aulasneo/tutor-contrib-notifications/issues"
 
 [project.entry-points."tutor.plugin.v1"]
-notifications = "tutornotifications.plugin"
+notification-jobs = "tutornotifications.plugin"
 
 [build-system]
 requires = ["hatchling"]

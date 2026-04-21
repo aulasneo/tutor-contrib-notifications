@@ -2,6 +2,8 @@
 .PHONY: docs
 
 PYTHON ?= python3
+TUTOR ?= $(if $(VIRTUAL_ENV),$(VIRTUAL_ENV)/bin/tutor,tutor)
+TUTOR_CMD = $(TUTOR) -r $(CURDIR)
 SRC_DIRS = ./tutornotifications
 BLACK_OPTS = --exclude templates ${SRC_DIRS}
 
@@ -37,8 +39,10 @@ test-dist: build ## Check the distribution files
 	twine check dist/*
 
 test-tutor:
-	export TUTOR_ROOT=$$(pwd) && tutor config save
-	tutor plugins enable notifications
+	rm -rf config.yml env/
+	$(TUTOR_CMD) plugins list
+	$(TUTOR_CMD) config save
+	$(TUTOR_CMD) plugins enable notification-jobs
 
 format: ## Format code automatically
 	black $(BLACK_OPTS)
