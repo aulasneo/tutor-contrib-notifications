@@ -34,7 +34,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - {% if NOTIFICATIONS_SEND_COURSE_UPDATE %}./manage.py lms send_course_update {{ LMS_HOST }}; {% endif %} {% if NOTIFICATIONS_SEND_RECURRING_NUDGE %}./manage.py lms send_recurring_nudge {{ LMS_HOST }}; {% endif %}{% if NOTIFICATIONS_SEND_DAILY_DIGEST %}./manage.py lms send_email_digest Daily; {% endif %}
+                - {% if NOTIFICATIONS_SEND_COURSE_UPDATE %}./manage.py lms send_course_update{% if NOTIFICATION_JOBS_SITE_DOMAIN %} {{ NOTIFICATION_JOBS_SITE_DOMAIN }}{% endif %}; {% endif %}{% if NOTIFICATIONS_SEND_RECURRING_NUDGE %}./manage.py lms send_recurring_nudge{% if NOTIFICATION_JOBS_SITE_DOMAIN %} {{ NOTIFICATION_JOBS_SITE_DOMAIN }}{% endif %}; {% endif %}{% if NOTIFICATIONS_SEND_DAILY_DIGEST %}./manage.py lms send_email_digest Daily; {% endif %}
           volumes:
             - name: settings-lms
               configMap:
