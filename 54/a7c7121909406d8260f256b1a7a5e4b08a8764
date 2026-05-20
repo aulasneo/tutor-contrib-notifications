@@ -1,0 +1,33 @@
+tutornotifications/plugin.py
+  h_f089305e7fe567 25-29
+  s_cfc8b701a0ac90::t_4d9105d7d0cd0c 2
+  s_cfc8b701a0ac90::t_0a10317b2cefe4 70-78,109
+CHANGELOG.md
+  s_cfc8b701a0ac90::t_a1b715c901f03e 7-12
+tutornotifications/patches/k8s-jobs
+  s_cfc8b701a0ac90::t_816c79158e145d 96-141
+README.rst
+  s_cfc8b701a0ac90::t_f7fc7adbbc466e 19,78,83-84
+  s_cfc8b701a0ac90::t_efe50a5d79e68b 89-91,100-101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "54a7c7121909406d8260f256b1a7a5e4b08a8764",
+  "prompts": {},
+  "humans": {
+    "h_f089305e7fe567": {
+      "author": "Andrés González <andres@aulasneo.com>"
+    }
+  },
+  "sessions": {
+    "s_cfc8b701a0ac90": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019e40dc-b9d6-74c0-a57b-0b3c707daab6",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Andrés González <andres@aulasneo.com>"
+    }
+  }
+}
