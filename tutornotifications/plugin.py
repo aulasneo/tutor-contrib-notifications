@@ -1,4 +1,5 @@
 from glob import glob
+from random import randint
 
 import click
 import importlib_resources
@@ -13,13 +14,19 @@ from .__about__ import __version__
 hooks.Filters.CONFIG_DEFAULTS.add_items(
     [
         ("NOTIFICATIONS_VERSION", __version__),
-        ("NOTIFICATIONS_DAILY_SCHEDULE", "0 10 * * *"),
-        ("NOTIFICATIONS_WEEKLY_SCHEDULE", "0 10 * * 0"),
         ("NOTIFICATION_JOBS_SITE_DOMAIN", "{{ LMS_HOST }}"),
         ("NOTIFICATIONS_SEND_COURSE_UPDATE", True),
         ("NOTIFICATIONS_SEND_RECURRING_NUDGE", True),
         ("NOTIFICATIONS_SEND_DAILY_DIGEST", True),
         ("NOTIFICATIONS_SEND_WEEKLY_DIGEST", True),
+    ]
+)
+
+hooks.Filters.CONFIG_UNIQUE.add_items(
+    [
+        ("NOTIFICATIONS_INSTRUCTOR_TASKS_SCHEDULE", f"{str(randint(0, 59))} * * * *"),
+        ("NOTIFICATIONS_DAILY_SCHEDULE", f"{str(randint(0, 59))} 10 * * *"),
+        ("NOTIFICATIONS_WEEKLY_SCHEDULE", f"{str(randint(0, 59))} 10 * * 0"),
     ]
 )
 
@@ -60,6 +67,16 @@ def send_weekly_digest() -> list[tuple[str, str]]:
 
 
 @click.command()
+def process_scheduled_instructor_tasks() -> list[tuple[str, str]]:
+    """
+    Process scheduled instructor tasks.
+    """
+    return [
+        ("lms", "./manage.py lms process_scheduled_instructor_tasks"),
+    ]
+
+
+@click.command()
 def send_course_update() -> list[tuple[str, str]]:
     """
     Send course update emails.
@@ -89,5 +106,6 @@ def send_recurring_nudge() -> list[tuple[str, str]]:
 
 hooks.Filters.CLI_DO_COMMANDS.add_item(send_daily_digest)
 hooks.Filters.CLI_DO_COMMANDS.add_item(send_weekly_digest)
+hooks.Filters.CLI_DO_COMMANDS.add_item(process_scheduled_instructor_tasks)
 hooks.Filters.CLI_DO_COMMANDS.add_item(send_course_update)
 hooks.Filters.CLI_DO_COMMANDS.add_item(send_recurring_nudge)

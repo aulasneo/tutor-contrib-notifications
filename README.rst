@@ -16,6 +16,7 @@ by keeping job automation for notification-related management commands:
 - Recurring nudges
 - Daily digests
 - Weekly digests
+- Scheduled instructor tasks
 
 This plugin will expose manual Tutor jobs for all of them and, on Kubernetes,
 will create CronJobs for the scheduled digests.
@@ -74,18 +75,20 @@ This plugin adds the following manual jobs:
 
     tutor {local|k8s} do send-daily-digest
     tutor {local|k8s} do send-weekly-digest
+    tutor {local|k8s} do process-scheduled-instructor-tasks
     tutor {local|k8s} do send-course-update
     tutor {local|k8s} do send-recurring-nudge
 
 For Kubernetes users, this plugin sets up CronJobs to run daily and weekly
-digests at the configured schedules. Users of a Tutor local installation will
-still have to configure cron outside Tutor.
+digests plus scheduled instructor tasks at the configured schedules. Users of a
+Tutor local installation will still have to configure cron outside Tutor.
 
 Configuration
 *************
 
-- NOTIFICATIONS_DAILY_SCHEDULE: Set the schedule for the daily emails. Default is "0 10 \* \* \*" (every day at 10am UTC).
-- NOTIFICATIONS_WEEKLY_SCHEDULE: Set the schedule for the weekly emails. Default is "0 10 \* \* 0" (every Sunday at 10am UTC).
+- NOTIFICATIONS_DAILY_SCHEDULE: Set the schedule for the daily emails. Default is "<random-minute> 10 \* \* \*" (every day at 10 UTC, with a randomized minute).
+- NOTIFICATIONS_INSTRUCTOR_TASKS_SCHEDULE: Set the schedule for scheduled instructor tasks. Default is "<random-minute> \* \* \* \*" (every hour, with a randomized minute).
+- NOTIFICATIONS_WEEKLY_SCHEDULE: Set the schedule for the weekly emails. Default is "<random-minute> 10 \* \* 0" (every Sunday at 10 UTC, with a randomized minute).
 - NOTIFICATION_JOBS_SITE_DOMAIN: Optional site domain passed to `send-course-update` and `send-recurring-nudge`. Default is "{{ LMS_HOST }}". Set it to an empty value to run those jobs for all sites.
 - NOTIFICATIONS_SEND_COURSE_UPDATE: Enable course updates. Default is True.
 - NOTIFICATIONS_SEND_RECURRING_NUDGE: Enable recurring nudges. Default is True.
@@ -94,6 +97,8 @@ Configuration
 
 Notes:
 
+- The default randomized minute spreads CronJob launches across clusters with many sites, which helps avoid large bursts of pods starting at the same time.
+- If you want a fixed execution time instead of a randomized minute, set the corresponding schedule variable explicitly in your Tutor config.
 - After changing the schedules, you will need to restart the cronjobs with `tutor k8s start`.
 
 
