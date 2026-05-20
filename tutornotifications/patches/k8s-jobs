@@ -93,4 +93,50 @@ spec:
               configMap:
                 name: openedx-config
 {% endif %}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scheduled-instructor-tasks
+  labels:
+    app.kubernetes.io/name: scheduled-instructor-tasks
+spec:
+  schedule: "{{ NOTIFICATIONS_INSTRUCTOR_TASKS_SCHEDULE }}"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: scheduled-instructor-tasks
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: scheduled-instructor-tasks
+              image: {{ DOCKER_IMAGE_OPENEDX }}
+              env:
+                - name: SERVICE_VARIANT
+                  value: lms
+                - name: DJANGO_SETTINGS_MODULE
+                  value: lms.envs.tutor.production
+              volumeMounts:
+                - mountPath: /openedx/edx-platform/lms/envs/tutor/
+                  name: settings-lms
+                - mountPath: /openedx/edx-platform/cms/envs/tutor/
+                  name: settings-cms
+                - mountPath: /openedx/config
+                  name: config
+              command:
+                - /bin/sh
+                - -c
+                - ./manage.py lms process_scheduled_instructor_tasks
+          volumes:
+            - name: settings-lms
+              configMap:
+                name: openedx-settings-lms
+            - name: settings-cms
+              configMap:
+                name: openedx-settings-cms
+            - name: config
+              configMap:
+                name: openedx-config
 # End of tutor-contrib-notifications
