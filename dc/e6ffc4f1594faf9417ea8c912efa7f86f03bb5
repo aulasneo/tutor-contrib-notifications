@@ -1,0 +1,39 @@
+tutornotifications/patches/k8s-jobs
+  s_9c3ee3627bd4e7::t_8c4e1260cd73c4 2,38
+CHANGELOG.md
+  s_9c3ee3627bd4e7::t_f8a21297e67bcf 13-15
+  s_9c3ee3627bd4e7::t_8c4e1260cd73c4 10-12
+  s_9c3ee3627bd4e7::t_e8c13ce27105a2 7-9,16
+Makefile
+  s_9c3ee3627bd4e7::t_72d66b1e4572da 2,11-12,14-15,21,23,26,29,32,34-38,40-41,44,47
+.github/workflows/publish.yml
+  s_9c3ee3627bd4e7::t_72d66b1e4572da 47,49
+.github/workflows/test.yml
+  s_9c3ee3627bd4e7::t_72d66b1e4572da 15,17
+tests/test_plugin.py
+  s_9c3ee3627bd4e7::t_f8a21297e67bcf 1-178
+README.rst
+  s_9c3ee3627bd4e7::t_8c4e1260cd73c4 4,6-7,13-15,34-35,37-39,46,55,60,71-72,75-93,97,105
+  s_9c3ee3627bd4e7::t_f8a21297e67bcf 111-127
+pyproject.toml
+  s_9c3ee3627bd4e7::t_72d66b1e4572da 28-34,36-37,55-56
+  s_9c3ee3627bd4e7::t_3b012e64d69c1d 35
+  s_9c3ee3627bd4e7::t_e8f4cbe9816859 57
+  s_9c3ee3627bd4e7::t_f29e19b0ead66c 10,17,20-21,24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "dce6ffc4f1594faf9417ea8c912efa7f86f03bb5",
+  "prompts": {},
+  "sessions": {
+    "s_9c3ee3627bd4e7": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0747b-b42f-72f0-be59-3c2012bd9c75",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Andrés González <andres@aulasneo.com>"
+    }
+  }
+}
