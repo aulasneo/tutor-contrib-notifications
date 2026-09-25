@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+- feat: Upgrade to Tutor 22, Verawood.
+- Remove deprecated daily and weekly digest commands, digest configuration, and the weekly CronJob; Verawood schedules notification digests automatically.
+- Keep course-update, recurring-nudge, and scheduled instructor-task jobs; omit the daily email CronJob when both email features are disabled.
+- Update installation instructions to remove the obsolete platform-notifications companion and document upgrade cleanup.
+- Declare development dependencies in the `dev` extra and update Make targets to use the selected Python interpreter.
+- Test Python 3.10–3.14 in both CI workflows and remove unused Node.js setup.
+- Add command and CronJob regression tests plus isolated Tutor and distribution checks that preserve workspace artifacts.
+
 ## Version 21.1.0 (2026-05-20)
 
 - Add a Kubernetes CronJob and manual Tutor job for `process_scheduled_instructor_tasks`.
