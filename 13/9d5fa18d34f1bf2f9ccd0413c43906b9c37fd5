@@ -1,0 +1,25 @@
+pyproject.toml
+  s_9c3ee3627bd4e7::t_13fcd729d6e824 36,59-60
+  s_9c3ee3627bd4e7::t_a6f1f22fc4f07c 61
+tests/test_plugin.py
+  s_9c3ee3627bd4e7::t_51a1608c39bed0 9
+  s_9c3ee3627bd4e7::t_13fcd729d6e824 10,12,21-26,32-33,50,104,108-110,112,122
+Makefile
+  s_9c3ee3627bd4e7::t_13fcd729d6e824 5,26,44,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "139d5fa18d34f1bf2f9ccd0413c43906b9c37fd5",
+  "prompts": {},
+  "sessions": {
+    "s_9c3ee3627bd4e7": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0747b-b42f-72f0-be59-3c2012bd9c75",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Andrés González <andres@aulasneo.com>"
+    }
+  }
+}
