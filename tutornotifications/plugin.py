@@ -17,8 +17,6 @@ hooks.Filters.CONFIG_DEFAULTS.add_items(
         ("NOTIFICATION_JOBS_SITE_DOMAIN", "{{ LMS_HOST }}"),
         ("NOTIFICATIONS_SEND_COURSE_UPDATE", True),
         ("NOTIFICATIONS_SEND_RECURRING_NUDGE", True),
-        ("NOTIFICATIONS_SEND_DAILY_DIGEST", True),
-        ("NOTIFICATIONS_SEND_WEEKLY_DIGEST", True),
     ]
 )
 
@@ -26,7 +24,6 @@ hooks.Filters.CONFIG_UNIQUE.add_items(
     [
         ("NOTIFICATIONS_INSTRUCTOR_TASKS_SCHEDULE", f"{str(randint(0, 59))} * * * *"),
         ("NOTIFICATIONS_DAILY_SCHEDULE", f"{str(randint(0, 59))} 10 * * *"),
-        ("NOTIFICATIONS_WEEKLY_SCHEDULE", f"{str(randint(0, 59))} 10 * * 0"),
     ]
 )
 
@@ -44,26 +41,6 @@ for path in glob(
 ########################################
 # CUSTOM JOBS (a.k.a. "do-commands")
 ########################################
-
-
-@click.command()
-def send_daily_digest() -> list[tuple[str, str]]:
-    """
-    Send daily digest emails.
-    """
-    return [
-        ("lms", "./manage.py lms send_email_digest Daily"),
-    ]
-
-
-@click.command()
-def send_weekly_digest() -> list[tuple[str, str]]:
-    """
-    Send weekly digest emails.
-    """
-    return [
-        ("lms", "./manage.py lms send_email_digest Weekly"),
-    ]
 
 
 @click.command()
@@ -104,8 +81,6 @@ def send_recurring_nudge() -> list[tuple[str, str]]:
     ]
 
 
-hooks.Filters.CLI_DO_COMMANDS.add_item(send_daily_digest)
-hooks.Filters.CLI_DO_COMMANDS.add_item(send_weekly_digest)
 hooks.Filters.CLI_DO_COMMANDS.add_item(process_scheduled_instructor_tasks)
 hooks.Filters.CLI_DO_COMMANDS.add_item(send_course_update)
 hooks.Filters.CLI_DO_COMMANDS.add_item(send_recurring_nudge)

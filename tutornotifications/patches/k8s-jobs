@@ -1,4 +1,5 @@
 # By tutor-contrib-notifications
+{% if NOTIFICATIONS_SEND_COURSE_UPDATE or NOTIFICATIONS_SEND_RECURRING_NUDGE %}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -34,54 +35,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - {% if NOTIFICATIONS_SEND_COURSE_UPDATE %}./manage.py lms send_course_update{% if NOTIFICATION_JOBS_SITE_DOMAIN %} {{ NOTIFICATION_JOBS_SITE_DOMAIN }}{% endif %}; {% endif %}{% if NOTIFICATIONS_SEND_RECURRING_NUDGE %}./manage.py lms send_recurring_nudge{% if NOTIFICATION_JOBS_SITE_DOMAIN %} {{ NOTIFICATION_JOBS_SITE_DOMAIN }}{% endif %}; {% endif %}{% if NOTIFICATIONS_SEND_DAILY_DIGEST %}./manage.py lms send_email_digest Daily; {% endif %}
-          volumes:
-            - name: settings-lms
-              configMap:
-                name: openedx-settings-lms
-            - name: settings-cms
-              configMap:
-                name: openedx-settings-cms
-            - name: config
-              configMap:
-                name: openedx-config
-{% if NOTIFICATIONS_SEND_WEEKLY_DIGEST %}
----
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: weekly-emails
-  labels:
-    app.kubernetes.io/name: weekly-emails
-spec:
-  schedule: "{{ NOTIFICATIONS_WEEKLY_SCHEDULE }}"
-  jobTemplate:
-    spec:
-      template:
-        metadata:
-          labels:
-            app.kubernetes.io/name: weekly-emails
-        spec:
-          restartPolicy: Never
-          containers:
-            - name: weekly-emails
-              image: {{ DOCKER_IMAGE_OPENEDX }}
-              env:
-                - name: SERVICE_VARIANT
-                  value: lms
-                - name: DJANGO_SETTINGS_MODULE
-                  value: lms.envs.tutor.production
-              volumeMounts:
-                - mountPath: /openedx/edx-platform/lms/envs/tutor/
-                  name: settings-lms
-                - mountPath: /openedx/edx-platform/cms/envs/tutor/
-                  name: settings-cms
-                - mountPath: /openedx/config
-                  name: config
-              command:
-                - /bin/sh
-                - -c
-                - ./manage.py lms send_email_digest Weekly
+                - {% if NOTIFICATIONS_SEND_COURSE_UPDATE %}./manage.py lms send_course_update{% if NOTIFICATION_JOBS_SITE_DOMAIN %} {{ NOTIFICATION_JOBS_SITE_DOMAIN }}{% endif %}; {% endif %}{% if NOTIFICATIONS_SEND_RECURRING_NUDGE %}./manage.py lms send_recurring_nudge{% if NOTIFICATION_JOBS_SITE_DOMAIN %} {{ NOTIFICATION_JOBS_SITE_DOMAIN }}{% endif %}; {% endif %}
           volumes:
             - name: settings-lms
               configMap:

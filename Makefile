@@ -1,54 +1,50 @@
 .DEFAULT_GOAL := help
-.PHONY: docs
+.PHONY: help clean upgrade requirements build dist test test-format test-lint test-types test-dist test-tutor format isort
 
 PYTHON ?= python3
-TUTOR ?= $(if $(VIRTUAL_ENV),$(VIRTUAL_ENV)/bin/tutor,tutor)
-TUTOR_CMD = $(TUTOR) -r $(CURDIR)
-SRC_DIRS = ./tutornotifications
+SRC_DIRS = ./tutornotifications ./tests
 BLACK_OPTS = --exclude templates ${SRC_DIRS}
 
 clean: ## Remove build artifacts
 	rm -rf build dist *.egg-info
 
-upgrade: ## Compile requirements from requirements.in
-	pip-compile
+upgrade: ## Upgrade development dependencies
+	$(PYTHON) -m pip install --upgrade --upgrade-strategy eager -e '.[dev]'
 
-requirements: ## Install requirements from requirements.txt
-	$(PYTHON) -m pip install --upgrade -r requirements.txt
-	$(PYTHON) -m pip install -e .
+requirements: ## Install the package and development dependencies
+	$(PYTHON) -m pip install -e '.[dev]'
 
 build: clean ## Build the package
 	$(PYTHON) -m build
 
 dist: ## Upload package to PyPI
-	twine upload dist/*
+	$(PYTHON) -m twine upload dist/*
 
-# Warning: These checks are not necessarily run on every PR.
-test: test-lint test-types test-format test-dist test-tutor ## Run some static checks.
+test: test-lint test-types test-format test-dist test-tutor ## Run static, packaging, and Tutor integration checks.
 
 test-format: ## Run code formatting tests
-	black --check --diff $(BLACK_OPTS)
+	$(PYTHON) -m black --check --diff $(BLACK_OPTS)
 
 test-lint: ## Run code linting tests
-	pylint --errors-only --enable=unused-import,unused-argument --ignore=templates --ignore=docs/_ext ${SRC_DIRS}
+	$(PYTHON) -m pylint --errors-only --enable=unused-import,unused-argument --ignore=templates --ignore=docs/_ext ${SRC_DIRS}
 
 test-types: ## Run type checks.
-	mypy --exclude=templates --ignore-missing-imports --implicit-reexport --strict ${SRC_DIRS}
+	$(PYTHON) -m mypy --exclude=templates --ignore-missing-imports --implicit-reexport --strict ${SRC_DIRS}
 
-test-dist: build ## Check the distribution files
-	twine check dist/*
+test-dist: ## Build and validate distributions in a temporary directory
+	@set -eu; check_dist_dir=$$(mktemp -d); \
+	trap 'rm -rf "$$check_dist_dir"' EXIT; \
+	$(PYTHON) -m build --outdir "$$check_dist_dir"; \
+	$(PYTHON) -m twine check "$$check_dist_dir"/*
 
-test-tutor:
-	rm -rf config.yml env/
-	$(TUTOR_CMD) plugins list
-	$(TUTOR_CMD) config save
-	$(TUTOR_CMD) plugins enable notification-jobs
+test-tutor: ## Test commands and rendered environments with isolated Tutor roots
+	$(PYTHON) -m unittest discover -s tests -v
 
 format: ## Format code automatically
-	black $(BLACK_OPTS)
+	$(PYTHON) -m black $(BLACK_OPTS)
 
-isort: ##  Sort imports. This target is not mandatory because the output may be incompatible with black formatting. Provided for convenience purposes.
-	isort --skip=templates ${SRC_DIRS}
+isort: ## Sort imports using Black-compatible formatting
+	$(PYTHON) -m isort --skip=templates ${SRC_DIRS}
 
 ESCAPE = 
 help: ## Print this help
