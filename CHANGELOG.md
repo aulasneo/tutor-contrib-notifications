@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## Version 22.0.0 (2026-09-25)
 
 - feat: Upgrade to Tutor 22, Verawood.
 - Remove deprecated daily and weekly digest commands, digest configuration, and the weekly CronJob; Verawood schedules notification digests automatically.
