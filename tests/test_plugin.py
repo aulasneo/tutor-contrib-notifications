@@ -2,12 +2,14 @@
 
 import itertools
 import os
-from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import unittest
+from pathlib import Path
+from typing import Any
 
+import click
 import jinja2
 import yaml
 from tutor import hooks
@@ -16,15 +18,19 @@ from tutornotifications import plugin
 
 
 class PluginTests(unittest.TestCase):
-    def test_commands_and_config(self):
-        commands = {
-            command.name: command for command in hooks.Filters.CLI_DO_COMMANDS.iterate()
-        }
+    def test_commands_and_config(self) -> None:
+        commands: dict[str, click.Command] = {}
+        for registered in hooks.Filters.CLI_DO_COMMANDS.iterate():
+            assert isinstance(registered, click.Command)
+            assert registered.name is not None
+            commands[registered.name] = registered
         for command in (
             plugin.send_course_update,
             plugin.send_recurring_nudge,
             plugin.process_scheduled_instructor_tasks,
         ):
+            assert command.name is not None
+            assert command.callback is not None
             self.assertIn(command.name, commands)
             jobs = command.callback()
             self.assertEqual(len(jobs), 1)
@@ -41,7 +47,7 @@ class PluginTests(unittest.TestCase):
         ):
             self.assertNotIn(key, config)
 
-    def test_cronjob_feature_combinations(self):
+    def test_cronjob_feature_combinations(self) -> None:
         patches = dict(hooks.Filters.ENV_PATCHES.iterate())
         template = jinja2.Environment(undefined=jinja2.StrictUndefined).from_string(
             patches["k8s-jobs"]
@@ -95,13 +101,15 @@ class PluginTests(unittest.TestCase):
                     )
 
     @staticmethod
-    def command(job):
+    def command(job: dict[str, Any]) -> str:
         container = job["spec"]["jobTemplate"]["spec"]["template"]["spec"][
             "containers"
         ][0]
-        return container["command"][2]
+        command = container["command"][2]
+        assert isinstance(command, str)
+        return command
 
-    def test_tutor_environment(self):
+    def test_tutor_environment(self) -> None:
         with tempfile.TemporaryDirectory(prefix="notification-jobs-test-") as directory:
             root = Path(directory)
             env = {
@@ -111,7 +119,7 @@ class PluginTests(unittest.TestCase):
             }
             env["TUTOR_PLUGINS_ROOT"] = str(root / "plugins")
 
-            def tutor(*args):
+            def tutor(*args: str) -> str:
                 result = subprocess.run(
                     [
                         sys.executable,

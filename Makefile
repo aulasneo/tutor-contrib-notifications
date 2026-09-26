@@ -2,7 +2,7 @@
 .PHONY: help clean upgrade requirements build dist test test-format test-lint test-types test-dist test-tutor format isort
 
 PYTHON ?= python3
-SRC_DIRS = ./tutornotifications
+SRC_DIRS = ./tutornotifications ./tests
 BLACK_OPTS = --exclude templates ${SRC_DIRS}
 
 clean: ## Remove build artifacts
@@ -23,7 +23,7 @@ dist: ## Upload package to PyPI
 test: test-lint test-types test-format test-dist test-tutor ## Run static, packaging, and Tutor integration checks.
 
 test-format: ## Run code formatting tests
-	$(PYTHON) -m black --check --diff $(BLACK_OPTS) tests
+	$(PYTHON) -m black --check --diff $(BLACK_OPTS)
 
 test-lint: ## Run code linting tests
 	$(PYTHON) -m pylint --errors-only --enable=unused-import,unused-argument --ignore=templates --ignore=docs/_ext ${SRC_DIRS}
@@ -41,9 +41,9 @@ test-tutor: ## Test commands and rendered environments with isolated Tutor roots
 	$(PYTHON) -m unittest discover -s tests -v
 
 format: ## Format code automatically
-	$(PYTHON) -m black $(BLACK_OPTS) tests
+	$(PYTHON) -m black $(BLACK_OPTS)
 
-isort: ##  Sort imports. This target is not mandatory because the output may be incompatible with black formatting. Provided for convenience purposes.
+isort: ## Sort imports using Black-compatible formatting
 	$(PYTHON) -m isort --skip=templates ${SRC_DIRS}
 
 ESCAPE = 

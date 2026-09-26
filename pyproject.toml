@@ -33,6 +33,7 @@ dev = [
   "mypy",
   "pylint",
   "twine>=7.0.0",
+  "types-PyYAML",
 ]
 
 [project.urls]
@@ -54,6 +55,9 @@ packages = ["tutornotifications"]
 
 [tool.black]
 target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
 
 [tool.hatch.build.targets.sdist]
 strict-naming = false
